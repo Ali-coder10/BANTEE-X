@@ -1,414 +1,968 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BanteeX — SMC × Kill Zone Guide</title>
-    <style>
-        :root {
-            --bg-dark: #0b0e11;
-            --bg-card: #151a21;
-            --text-main: #e0e0e0;
-            --text-muted: #9aa0a6;
-            --accent-cyan: #00bcd4;
-            --accent-green: #00e676;
-            --accent-red: #ff5252;
-            --accent-orange: #ff9100;
-            --accent-gold: #ffd700;
-            --accent-purple: #e040fb;
-            --border-color: #2a3038;
-        }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>🔱 Bantee Alpha — BanteeX</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --gold: #FFD600;
+    --gold-dim: #b89a00;
+    --cyan: #00E5FF;
+    --green: #00E676;
+    --red: #FF1744;
+    --orange: #FF6D00;
+    --purple: #7B61FF;
+    --bg: #080810;
+    --bg2: #0d0d1a;
+    --bg3: #111122;
+    --card: #0f0f20;
+    --border: rgba(255,214,0,0.15);
+    --text: #c8d0e0;
+    --text-dim: #606880;
+  }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
 
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
 
-        /* --- Animations --- */
-        @keyframes pulse-gold {
-            0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4); }
-            70% { box-shadow: 0 0 0 15px rgba(255, 215, 0, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
-        }
+  body::before {
+    content:''; position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.07) 2px,rgba(0,0,0,0.07) 4px);
+    pointer-events: none; z-index: 9999;
+  }
+  body::after {
+    content:''; position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(255,214,0,0.03) 1px,transparent 1px), linear-gradient(90deg,rgba(255,214,0,0.03) 1px,transparent 1px);
+    background-size: 60px 60px; pointer-events: none; z-index: 0;
+    animation: gridDrift 20s linear infinite;
+  }
+  @keyframes gridDrift { 0%{background-position:0 0;} 100%{background-position:60px 60px;} }
 
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
+  /* ══════════════════════════════
+     TOP BAR — BANTEEX LOGO + HAMBURGER
+  ══════════════════════════════ */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 62px; z-index: 5000;
+    background: rgba(8,8,16,0.95);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+  }
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
+  /* BANTEEX logo — exactly like image: BANTEE gold, X cyan */
+  .topbar-brand {
+    font-family: 'Orbitron', monospace;
+    font-size: 22px; font-weight: 900;
+    letter-spacing: 3px;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 0;
+    text-shadow: 0 0 20px rgba(255,214,0,0.3);
+    cursor: pointer;
+  }
+  .topbar-brand .b-bantee { color: var(--gold); }
+  .topbar-brand .b-x      { color: var(--cyan); }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+  /* HAMBURGER */
+  .menu-btn {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    width: 44px; height: 44px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 5px;
+    cursor: pointer; transition: all 0.25s; z-index: 5001;
+  }
+  .menu-btn:hover { border-color: rgba(255,214,0,0.4); background: rgba(255,214,0,0.06); }
+  .menu-btn span { display: block; width: 20px; height: 2px; background: var(--gold); border-radius: 2px; transition: all 0.3s; }
+  .menu-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .menu-btn.open span:nth-child(2) { opacity: 0; }
+  .menu-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-        /* --- Layout --- */
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+  /* DROPDOWN */
+  .dropdown {
+    position: fixed; top: 70px; right: 16px;
+    z-index: 4999;
+    background: rgba(10,10,20,0.98);
+    border: 1px solid var(--border);
+    border-radius: 14px; padding: 8px;
+    min-width: 230px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 40px rgba(255,214,0,0.05);
+    display: none; animation: dropIn 0.2s ease;
+  }
+  .dropdown.open { display: block; }
+  @keyframes dropIn { from{opacity:0;transform:translateY(-8px);} to{opacity:1;transform:translateY(0);} }
 
-        header {
-            text-align: center;
-            padding: 60px 0 40px;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 40px;
-            animation: slideIn 0.8s ease-out;
-        }
+  .dropdown-brand {
+    font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 900;
+    padding: 10px 14px 12px; border-bottom: 1px solid var(--border); margin-bottom: 6px;
+    display: flex; gap: 0;
+  }
+  .dropdown-brand .b-bantee { color: var(--gold); }
+  .dropdown-brand .b-x      { color: var(--cyan); }
 
-        h1 {
-            font-size: 3.5rem;
-            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
+  .dropdown a {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 14px; border-radius: 8px;
+    text-decoration: none; font-family: 'Orbitron', monospace;
+    font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    color: var(--text-dim); transition: all 0.2s; cursor: pointer;
+  }
+  .dropdown a:hover, .dropdown a.active {
+    background: rgba(255,214,0,0.08); color: var(--gold);
+  }
+  .dropdown a .d-icon { font-size: 16px; flex-shrink: 0; }
+  .dropdown-divider { height: 1px; background: var(--border); margin: 6px 0; }
 
-        h2 {
-            font-size: 1.8rem;
-            color: var(--text-main);
-            margin-bottom: 20px;
-            border-left: 4px solid var(--accent-cyan);
-            padding-left: 15px;
-            margin-top: 40px;
-        }
+  .dropdown-socials {
+    display: flex; gap: 8px; padding: 10px 14px 6px; justify-content: center;
+  }
+  .dsoc {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03);
+    text-decoration: none; transition: all 0.25s;
+  }
+  .dsoc:hover { border-color: rgba(255,214,0,0.3); background: rgba(255,214,0,0.07); transform: translateY(-2px); }
+  .dsoc svg { width: 18px; height: 18px; }
 
-        h3 {
-            font-size: 1.4rem;
-            color: var(--accent-cyan);
-            margin: 25px 0 15px;
-        }
+  /* ══════════════════════════════
+     PAGES
+  ══════════════════════════════ */
+  .page { display: none; min-height: 100vh; position: relative; z-index: 1; padding-top: 62px; }
+  .page.active { display: block; }
 
-        h4 {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 20px;
-        }
+  .container {
+    max-width: 960px; margin: 0 auto;
+    padding: 0 24px 80px; position: relative; z-index: 1;
+  }
 
-        p {
-            margin-bottom: 15px;
-            color: #cfcfcf;
-        }
+  /* ══════════════════════════════
+     HERO
+  ══════════════════════════════ */
+  .hero { text-align: center; padding: 70px 0 50px; position: relative; }
+  .hero-glow {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse, rgba(255,214,0,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .trident { font-size: 64px; line-height: 1; margin-bottom: 12px; animation: pulse 2.5s ease-in-out infinite; }
+  @keyframes pulse {
+    0%,100% { text-shadow: 0 0 20px rgba(255,214,0,0.4); }
+    50%      { text-shadow: 0 0 50px rgba(255,214,0,0.9), 0 0 80px rgba(255,214,0,0.3); }
+  }
+  .hero-title {
+    font-family: 'Orbitron', monospace; font-size: 36px; font-weight: 900;
+    color: var(--gold); letter-spacing: 4px; text-transform: uppercase; line-height: 1.1;
+  }
+  .hero-sub {
+    font-family: 'Orbitron', monospace; font-size: 13px; font-weight: 400;
+    color: var(--cyan); letter-spacing: 8px; margin-top: 10px; text-transform: uppercase; opacity: 0.8;
+  }
+  .hero-desc {
+    margin-top: 20px; font-size: 17px; color: var(--text-dim);
+    max-width: 560px; margin-left: auto; margin-right: auto; font-weight: 500;
+  }
 
-        /* --- Components --- */
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            animation: slideIn 0.5s ease-out backwards;
-        }
+  .divider { height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin: 40px 0; opacity: 0.3; }
 
-        .table-wrapper {
-            overflow-x: auto;
-            margin: 20px 0;
-        }
+  .section { margin-bottom: 48px; animation: fadeUp 0.5s ease both; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
+  .section-label { font-family: 'Orbitron', monospace; font-size: 10px; letter-spacing: 6px; color: var(--gold); text-transform: uppercase; margin-bottom: 6px; opacity: 0.6; }
+  .section-title { font-family: 'Orbitron', monospace; font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  .section-title .icon { font-size: 22px; }
 
-        th, td {
-            text-align: left;
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--border-color);
-        }
+  /* CARDS */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 22px 26px; margin-bottom: 16px; position: relative; overflow: hidden; transition: border-color 0.3s, box-shadow 0.3s; }
+  .card:hover { border-color: rgba(255,214,0,0.35); box-shadow: 0 0 30px rgba(255,214,0,0.05); }
+  .card::before { content:''; position: absolute; top:0; left:0; right:0; height: 2px; background: var(--accent, var(--gold)); opacity: 0.6; }
+  .card-title { font-family: 'Orbitron', monospace; font-size: 13px; font-weight: 700; color: var(--accent, var(--gold)); letter-spacing: 2px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .card p { font-size: 15px; color: var(--text); font-weight: 400; line-height: 1.7; }
 
-        th {
-            background-color: rgba(0, 188, 212, 0.1);
-            color: var(--accent-cyan);
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-        }
+  /* ══════════════════════════════
+     TIMEZONE SELECTOR
+  ══════════════════════════════ */
+  .tz-bar {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(255,214,0,0.05); border: 1px solid rgba(255,214,0,0.2);
+    border-radius: 10px; padding: 10px 16px; margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .tz-label {
+    font-family: 'Orbitron', monospace; font-size: 10px;
+    color: var(--gold); letter-spacing: 2px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .tz-select {
+    flex: 1; min-width: 180px;
+    background: rgba(8,8,16,0.8); border: 1px solid rgba(255,214,0,0.25);
+    color: var(--text); font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; padding: 7px 12px; border-radius: 7px;
+    outline: none; cursor: pointer; appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23FFD600' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center;
+    padding-right: 30px;
+    transition: border-color 0.2s;
+  }
+  .tz-select:focus { border-color: var(--gold); }
+  .tz-select option { background: #0d0d1a; color: var(--text); }
 
-        tr:hover {
-            background-color: rgba(255,255,255,0.02);
-        }
+  /* KZ GRID */
+  .kz-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .kz-card { border-radius: 10px; padding: 18px 16px; text-align: center; border: 1px solid; position: relative; overflow: hidden; }
+  .kz-card.asian  { background: rgba(123,97,255,0.08); border-color: rgba(123,97,255,0.3); }
+  .kz-card.london { background: rgba(255,214,0,0.07);  border-color: rgba(255,214,0,0.3); }
+  .kz-card.ny     { background: rgba(0,229,255,0.07);  border-color: rgba(0,229,255,0.3); }
+  .kz-flag  { font-size: 28px; margin-bottom: 6px; }
+  .kz-name  { font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 700; letter-spacing: 2px; margin-bottom: 8px; }
+  .kz-time  { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #fff; margin-bottom: 4px; font-weight: 600; }
+  .kz-local { font-size: 12px; color: var(--text-dim); margin-bottom: 2px; font-family: 'JetBrains Mono', monospace; }
+  .kz-local-val { font-size: 13px; font-weight: 700; margin-bottom: 4px; font-family: 'JetBrains Mono', monospace; transition: all 0.3s; }
+  .kz-role  { margin-top: 8px; font-size: 12px; font-weight: 600; }
+  .kz-card.asian  .kz-name { color: #7B61FF; }
+  .kz-card.london .kz-name { color: var(--gold); }
+  .kz-card.ny     .kz-name { color: var(--cyan); }
+  .kz-card.asian  .kz-role { color: #7B61FF; }
+  .kz-card.london .kz-role { color: var(--gold); }
+  .kz-card.ny     .kz-role { color: var(--cyan); }
+  .kz-card.asian  .kz-local-val { color: #7B61FF; }
+  .kz-card.london .kz-local-val { color: var(--gold); }
+  .kz-card.ny     .kz-local-val { color: var(--cyan); }
 
-        /* --- Visual Elements (Simulated Chart) --- */
-        .visual-container {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin: 30px 0;
-            padding: 20px;
-            background: #000;
-            border-radius: 10px;
-            border: 1px solid #333;
-            position: relative;
-            overflow: hidden;
-        }
+  /* LEGEND */
+  .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .legend-item { display: flex; align-items: flex-start; gap: 14px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 14px 16px; transition: background 0.2s; }
+  .legend-item:hover { background: rgba(255,255,255,0.04); }
+  .legend-icon { font-size: 26px; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+  .legend-body .name { font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 700; letter-spacing: 1px; margin-bottom: 4px; }
+  .legend-body .desc { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
 
-        /* Simulated Chart Lines */
-        .chart-line {
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: rgba(255,255,255,0.1);
-            z-index: 0;
-        }
+  /* STEPS */
+  .step { display: flex; gap: 20px; margin-bottom: 8px; }
+  .step-num { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), #b89a00); color: #000; font-family: 'Orbitron', monospace; font-size: 14px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; box-shadow: 0 0 20px rgba(255,214,0,0.3); }
+  .step-content { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; margin-bottom: 12px; }
+  .step-content .step-title { font-family: 'Orbitron', monospace; font-size: 12px; font-weight: 700; color: var(--gold); letter-spacing: 2px; margin-bottom: 6px; }
+  .step-content p { font-size: 14px; color: var(--text); line-height: 1.65; }
 
-        /* Order Blocks */
-        .ob-box {
-            position: absolute;
-            width: 120px;
-            height: 40px;
-            border: 2px solid;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 0.8rem;
-            z-index: 2;
-            animation: float 4s ease-in-out infinite;
-            opacity: 0.9;
-        }
+  /* GRADE TABLE */
+  .grade-table { width: 100%; border-collapse: collapse; border-radius: 10px; overflow: hidden; font-size: 14px; }
+  .grade-table th { background: rgba(255,214,0,0.1); color: var(--gold); font-family: 'Orbitron', monospace; font-size: 10px; letter-spacing: 2px; padding: 12px 16px; text-align: left; font-weight: 700; border-bottom: 1px solid rgba(255,214,0,0.2); }
+  .grade-table td { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; vertical-align: middle; }
+  .grade-table tr:last-child td { border-bottom: none; }
+  .grade-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+  .grade-a { color: var(--gold); font-weight: 700; font-family: 'Orbitron', monospace; font-size: 12px; }
+  .grade-b { color: var(--green); font-weight: 700; font-family: 'Orbitron', monospace; font-size: 12px; }
+  .grade-c { color: var(--text-dim); font-weight: 700; font-family: 'Orbitron', monospace; font-size: 12px; }
 
-        .ob-bull {
-            background-color: rgba(0, 188, 212, 0.2);
-            border-color: var(--accent-cyan);
-            color: var(--accent-cyan);
-            top: 30%;
-            left: 20%;
-        }
+  /* TP GRID */
+  .tp-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; margin-top: 16px; }
+  .tp-box { border-radius: 8px; padding: 14px 12px; text-align: center; border: 1px solid; }
+  .tp-box.sl  { background: rgba(255,23,68,0.08);  border-color: rgba(255,23,68,0.3); }
+  .tp-box.tp1 { background: rgba(0,230,118,0.06);  border-color: rgba(0,230,118,0.25); }
+  .tp-box.tp2 { background: rgba(0,229,255,0.06);  border-color: rgba(0,229,255,0.25); }
+  .tp-box.tp3 { background: rgba(255,214,0,0.06);  border-color: rgba(255,214,0,0.25); }
+  .tp-label { font-family: 'Orbitron', monospace; font-size: 10px; letter-spacing: 2px; margin-bottom: 6px; font-weight: 700; }
+  .tp-box.sl  .tp-label { color: var(--red); }
+  .tp-box.tp1 .tp-label { color: var(--green); }
+  .tp-box.tp2 .tp-label { color: var(--cyan); }
+  .tp-box.tp3 .tp-label { color: var(--gold); }
+  .tp-pct { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 600; color: #fff; }
+  .tp-detail { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
 
-        .ob-bear {
-            background-color: rgba(255, 82, 82, 0.2);
-            border-color: var(--accent-red);
-            color: var(--accent-red);
-            top: 60%;
-            left: 60%;
-            animation-delay: 1s;
-        }
+  /* RULES */
+  .rules-list { list-style: none; padding: 0; }
+  .rules-list li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 15px; display: flex; align-items: flex-start; gap: 10px; }
+  .rules-list li:last-child { border-bottom: none; }
+  .rules-list li::before { content: '▸'; color: var(--gold); font-size: 14px; flex-shrink: 0; margin-top: 1px; }
 
-        /* FVG */
-        .fvg-box {
-            position: absolute;
-            width: 80px;
-            height: 30px;
-            background-color: rgba(0, 230, 118, 0.2);
-            border-left: 2px dashed var(--accent-green);
-            border-right: 2px dashed var(--accent-green);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            color: var(--accent-green);
-            top: 45%;
-            left: 40%;
-            z-index: 1;
-        }
+  /* ALERT STEPS */
+  .alert-steps { counter-reset: alert-step; }
+  .alert-step { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 12px; }
+  .alert-step-num { width: 28px; height: 28px; border: 1px solid var(--cyan); border-radius: 50%; color: var(--cyan); font-family: 'Orbitron', monospace; font-size: 11px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 700; }
+  .alert-step p { font-size: 14px; line-height: 1.6; padding-top: 3px; }
+  .alert-step code { background: rgba(0,229,255,0.1); color: var(--cyan); font-family: 'JetBrains Mono', monospace; font-size: 12px; padding: 2px 7px; border-radius: 4px; border: 1px solid rgba(0,229,255,0.2); }
 
-        /* Signals */
-        .signal-triangle {
-            width: 0; 
-            height: 0; 
-            border-left: 20px solid transparent;
-            border-right: 20px solid transparent;
-            position: absolute;
-            z-index: 3;
-            filter: drop-shadow(0 0 5px currentColor);
-        }
+  /* WARNING */
+  .warning { background: rgba(255,109,0,0.08); border: 1px solid rgba(255,109,0,0.3); border-radius: 10px; padding: 16px 20px; display: flex; gap: 12px; align-items: flex-start; margin-top: 16px; }
+  .warning-icon { font-size: 22px; flex-shrink: 0; }
+  .warning p { font-size: 14px; color: #ffb74d; line-height: 1.6; }
 
-        .signal-long {
-            border-top: 25px solid var(--accent-green);
-            bottom: 20%;
-            left: 30%;
-            animation: pulse-gold 2s infinite;
-        }
+  /* BADGES */
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-family: 'Orbitron', monospace; font-size: 9px; font-weight: 700; letter-spacing: 1px; vertical-align: middle; margin-left: 6px; }
+  .badge-gold  { background: rgba(255,214,0,0.15);  color: var(--gold);  border: 1px solid rgba(255,214,0,0.3); }
+  .badge-green { background: rgba(0,230,118,0.12);  color: var(--green); border: 1px solid rgba(0,230,118,0.3); }
+  .badge-cyan  { background: rgba(0,229,255,0.12);  color: var(--cyan);  border: 1px solid rgba(0,229,255,0.3); }
+  .badge-red   { background: rgba(255,23,68,0.12);  color: var(--red);   border: 1px solid rgba(255,23,68,0.3); }
 
-        .signal-short {
-            border-bottom: 25px solid var(--accent-red);
-            top: 15%;
-            right: 25%;
-            animation: pulse-gold 2s infinite 1s;
-        }
+  /* DASHBOARD REPLICA */
+  .dash-replica { background: linear-gradient(135deg,#0f0f20,#0a0a18); border: 1px solid var(--gold); border-radius: 14px; overflow: hidden; max-width: 460px; margin: 0 auto 40px; box-shadow: 0 0 60px rgba(255,214,0,0.08); animation: glowPulse 3s ease-in-out infinite; }
+  @keyframes glowPulse { 0%,100%{box-shadow:0 0 40px rgba(255,214,0,0.07);} 50%{box-shadow:0 0 70px rgba(255,214,0,0.15);} }
+  .dash-header { display: grid; grid-template-columns: 1fr 1fr; background: rgba(255,214,0,0.08); border-bottom: 1px solid rgba(255,214,0,0.25); padding: 11px 18px; }
+  .dash-header .d-title { font-family: 'Orbitron', monospace; font-size: 12px; font-weight: 900; color: var(--gold); letter-spacing: 2px; }
+  .dash-header .d-status { font-family: 'Orbitron', monospace; font-size: 12px; font-weight: 700; color: var(--gold); letter-spacing: 3px; text-align: right; }
+  .d-row { display: grid; grid-template-columns: 1fr 1fr; align-items: center; padding: 10px 18px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .d-row:last-child { border-bottom: none; }
+  .d-key { font-size: 13px; color: var(--text); font-weight: 500; }
+  .d-val { font-size: 13px; font-weight: 700; text-align: right; display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+  .dash-action { background: rgba(255,214,0,0.06); padding: 13px 18px; display: grid; grid-template-columns: 1fr 1fr; align-items: center; border-top: 1px solid rgba(255,214,0,0.2); }
+  .d-action-key { font-size: 13px; font-weight: 700; color: var(--text); }
+  .d-action-val { display: flex; align-items: center; justify-content: flex-end; gap: 8px; font-family: 'Orbitron', monospace; font-size: 13px; font-weight: 700; }
 
-        /* --- Badge Styles --- */
-        .badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        .badge-a { background: rgba(255, 215, 0, 0.2); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
-        .badge-b { background: rgba(0, 188, 212, 0.2); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
-        .badge-c { background: rgba(154, 160, 166, 0.2); color: var(--text-muted); border: 1px solid var(--text-muted); }
-        .badge-wait { background: rgba(255, 82, 82, 0.2); color: var(--accent-red); border: 1px solid var(--accent-red); }
+  /* ROW CARDS */
+  .row-card { border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 14px; transition: border-color 0.3s; }
+  .row-card:hover { border-color: rgba(255,214,0,0.28); }
+  .row-card-header { display: flex; align-items: center; gap: 14px; padding: 14px 20px; background: rgba(255,255,255,0.025); border-bottom: 1px solid var(--border); }
+  .row-card-icon { font-size: 24px; flex-shrink: 0; }
+  .row-card-name { font-family: 'Orbitron', monospace; font-size: 12px; font-weight: 700; letter-spacing: 2px; }
+  .row-card-body { padding: 14px 20px; }
+  .row-card-body p { font-size: 14px; color: var(--text); line-height: 1.75; }
+  .states { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .state { display: flex; align-items: center; gap: 7px; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; border: 1px solid; font-family: 'JetBrains Mono', monospace; }
 
-        /* --- Kill Zone Highlights --- */
-        .kz-active {
-            color: var(--accent-green);
-            font-weight: bold;
-            animation: blink 1.5s infinite;
-        }
+  /* GRADE BLOCKS */
+  .grade-stack { display: flex; flex-direction: column; gap: 12px; }
+  .grade-block { border-radius: 12px; padding: 20px 22px; border: 1px solid; position: relative; overflow: hidden; }
+  .grade-block::before { content:''; position: absolute; top:0; left:0; right:0; height: 3px; background: var(--gc); }
+  .gb-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .gb-badge { font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 900; padding: 4px 14px; border-radius: 20px; border: 1px solid; letter-spacing: 1px; }
+  .gb-winrate { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700; color: var(--gc); }
+  .gb-label { font-family: 'Orbitron', monospace; font-size: 10px; letter-spacing: 2px; color: var(--text-dim); margin-bottom: 3px; }
+  .gb-conds { list-style: none; margin-top: 10px; }
+  .gb-conds li { font-size: 13px; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 8px; color: var(--text); }
+  .gb-conds li:last-child { border-bottom: none; }
+  .gb-action { margin-top: 12px; padding: 9px 14px; border-radius: 8px; font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-align: center; border: 1px solid; }
 
-        /* --- Footer --- */
-        footer {
-            text-align: center;
-            margin-top: 80px;
-            padding: 40px;
-            border-top: 1px solid var(--border-color);
-            color: var(--text-muted);
-            font-size: 0.8rem;
-        }
+  /* TIMELINE */
+  .timeline { position: relative; padding-left: 32px; }
+  .timeline::before { content:''; position: absolute; left:10px; top:0; bottom:0; width:2px; background: linear-gradient(180deg,var(--gold),rgba(255,214,0,0.1)); }
+  .tl-item { position: relative; margin-bottom: 24px; }
+  .tl-dot { position: absolute; left:-26px; top:4px; width:14px; height:14px; border-radius:50%; background:var(--gold); border:2px solid var(--bg); box-shadow:0 0 12px rgba(255,214,0,0.5); }
+  .tl-time { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--gold); margin-bottom: 4px; opacity:.7; }
+  .tl-title { font-family: 'Orbitron', monospace; font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 6px; letter-spacing: 1px; }
+  .tl-body { font-size: 13px; color: var(--text); line-height: 1.65; }
+  .warn-gold { background: rgba(255,214,0,0.06); border: 1px solid rgba(255,214,0,0.25); border-radius: 10px; padding: 16px 20px; display: flex; gap: 12px; margin-top: 16px; }
+  .warn-gold p { font-size: 13px; color: #ffe082; line-height: 1.65; }
 
-        .disclaimer {
-            margin-top: 20px;
-            font-style: italic;
-            opacity: 0.7;
-        }
+  /* ABOUT */
+  .about-hero { text-align: center; padding: 60px 0 40px; position: relative; }
+  .about-avatar { width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg,rgba(255,214,0,0.15),rgba(0,229,255,0.1)); border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 44px; margin: 0 auto 20px; box-shadow: 0 0 40px rgba(255,214,0,0.2); animation: pulse 3s ease-in-out infinite; }
+  .about-name { font-family: 'Orbitron', monospace; font-size: 28px; font-weight: 900; color: #fff; letter-spacing: 3px; }
+  .about-tag  { font-family: 'Orbitron', monospace; font-size: 11px; color: var(--cyan); letter-spacing: 5px; margin-top: 6px; opacity:.8; }
+  .about-bio  { max-width: 540px; margin: 18px auto 0; font-size: 15px; color: var(--text-dim); line-height: 1.75; }
 
-        /* --- Responsive --- */
-        @media (max-width: 768px) {
-            h1 { font-size: 2.5rem; }
-            .visual-container { height: 300px; }
-            .ob-box, .fvg-box { font-size: 0.6rem; }
-        }
-    </style>
+  .social-grid { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-top: 44px; }
+  .social-link { display: flex; flex-direction: column; align-items: center; gap: 12px; text-decoration: none; padding: 28px 32px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); transition: all 0.3s; min-width: 130px; }
+  .social-link:hover { transform: translateY(-5px); border-color: var(--sc,var(--gold)); background: rgba(255,255,255,0.05); box-shadow: 0 10px 40px rgba(0,0,0,0.4), 0 0 20px var(--sg,rgba(255,214,0,0.15)); }
+  .social-logo { width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; background: var(--sb,rgba(255,214,0,0.1)); border: 1px solid var(--sc,rgba(255,214,0,0.3)); transition: all 0.3s; }
+  .social-link:hover .social-logo { box-shadow: 0 0 24px var(--sg,rgba(255,214,0,0.4)); }
+  .social-logo svg { width: 32px; height: 32px; }
+  .social-name { font-family: 'Orbitron', monospace; font-size: 10px; font-weight: 700; letter-spacing: 2px; color: var(--sc,var(--gold)); }
+
+  /* FOOTER */
+  .footer { text-align: center; padding: 40px 0 20px; border-top: 1px solid var(--border); margin-top: 60px; }
+  .footer-brand { font-family: 'Orbitron', monospace; font-size: 22px; font-weight: 900; color: var(--gold); letter-spacing: 4px; margin-bottom: 6px; text-shadow: 0 0 30px rgba(255,214,0,0.4); }
+  .footer-sub { font-size: 13px; color: var(--text-dim); letter-spacing: 2px; }
+  .footer-disc { font-size: 11px; color: var(--text-dim); max-width: 440px; margin: 12px auto 0; line-height: 1.7; }
+
+  /* RESPONSIVE */
+  @media(max-width:600px) {
+    .kz-grid     { grid-template-columns: 1fr; }
+    .legend-grid { grid-template-columns: 1fr; }
+    .tp-grid     { grid-template-columns: 1fr 1fr; }
+    .hero-title  { font-size: 24px; }
+    .social-link { min-width: 90px; padding: 20px 22px; }
+    .topbar-brand { font-size: 18px; }
+  }
+</style>
 </head>
 <body>
 
+<!-- ══ TOP BAR ══ -->
+<div class="topbar">
+  <div class="topbar-brand" onclick="showPage('home')">
+    <span class="b-bantee">BANTEE</span><span class="b-x">X</span>
+  </div>
+  <div class="menu-btn" id="menuBtn" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</div>
+
+<!-- ══ DROPDOWN ══ -->
+<div class="dropdown" id="dropdown">
+  <div class="dropdown-brand">
+    <span class="b-bantee">BANTEE</span><span class="b-x">X</span>
+  </div>
+  <a onclick="showPage('home')"      id="nav-home">      <span class="d-icon">🏠</span> HOME</a>
+  <a onclick="showPage('dashboard')" id="nav-dashboard"> <span class="d-icon">📋</span> DASHBOARD GUIDE</a>
+  <a onclick="showPage('about')"     id="nav-about">     <span class="d-icon">🌐</span> ABOUT</a>
+  <div class="dropdown-divider"></div>
+  <div class="dropdown-socials">
+    <a class="dsoc" href="https://coinmarketcap.com/community/profile/manf32qw6b0p" target="_blank" title="CoinMarketCap">
+      <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#0D3349"/><path d="M22.72 18.27c-.28.16-.6.17-.88.02-.36-.19-.56-.6-.56-1.13v-2.86c0-.81-.33-1.38-.88-1.54-.94-.28-1.67.82-1.95 1.27l-2.45 4v-3.82c-.02-.73-.26-1.17-.72-1.3-.32-.09-.78-.05-1.22.59l-4.1 6.57a6.38 6.38 0 01-.62-2.77A6.66 6.66 0 0116 10.3a6.66 6.66 0 016.65 6.7c0 .46-.05.92-.14 1.37l.21-.1zM16 8a8 8 0 100 16A8 8 0 0016 8z" fill="#17C784"/></svg>
+    </a>
+    <a class="dsoc" href="https://app.binance.com/uni-qr/cpro/Thesignalprovider?l=en&r=BUW1XT3I&uc=app_square_share_link&us=copylink" target="_blank" title="Binance Square">
+      <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#1A1A1A"/><path d="M16 7l2.06 2.06-6.88 6.88-2.06-2.06L16 7zM10.44 13.5l2.06 2.06-2.06 2.06L8.38 15.56l2.06-1.06zm5.56 5.56l2.06 2.06-2.06 2.06-2.06-2.06 2.06-2.06zm5.56-5.56l2.06 2.06-2.06 2.06-2.06-2.06 2.06-2.06zm-2.62 2.62l-4.94 4.94-2.06-2.06 4.94-4.94 2.06 2.06z" fill="#F0B90B"/></svg>
+    </a>
+    <a class="dsoc" href="https://x.com/MrAdvisor_" target="_blank" title="X / Twitter">
+      <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#000"/><path d="M18.24 14.9L24.1 8h-1.4l-5.1 5.9L13.4 8H8.5l6.15 8.95L8.5 24h1.4l5.38-6.25L19.6 24h4.9l-6.26-9.1zm-1.9 2.2l-.62-.9-4.94-7.07H12.7l3.98 5.7.62.9 5.18 7.4H30.3l-3.96-5.73v-.3z" fill="#fff"/></svg>
+    </a>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PAGE 1 — HOME
+════════════════════════════════════════ -->
+<div id="page-home" class="page active">
 <div class="container">
-    <header>
-        <h1>BanteeX</h1>
-        <h2>SMC × Kill Zone — Indicator Guide</h2>
-        <p>A complete professional guide to reading, understanding, and trading the Institutional Sniper Setup on TradingView.</p>
-    </header>
 
-    <!-- Intro Table -->
+  <div class="hero">
+    <div class="hero-glow"></div>
+    <div class="trident">🔱</div>
+    <div class="hero-title">Bantee Alpha</div>
+    <div class="hero-sub">SMC × Kill Zone — Indicator Guide</div>
+    <p class="hero-desc">Complete professional guide to reading, understanding, and trading the Institutional Sniper Setup on TradingView.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- SECTION 1 -->
+  <div class="section">
+    <div class="section-label">Section 01</div>
+    <div class="section-title"><span class="icon">🧠</span> What Is This Indicator?</div>
     <div class="card">
-        <h3>Strategy Overview</h3>
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Strategy</th>
-                        <th>Timeframe</th>
-                        <th>Best Pairs</th>
-                        <th>Win Rate</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>SMC + Kill Zone</td>
-                        <td>15M Entry / 4H Bias</td>
-                        <td>BTC / ETH / SOL</td>
-                        <td>65 - 72%</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+      <div class="card-title">CONCEPT OVERVIEW</div>
+      <p>This is a <strong style="color:#fff">multi-confluence institutional trading indicator</strong> built on Smart Money Concepts (SMC) combined with ICT Kill Zone timing. It tracks what institutional traders (banks, hedge funds, market makers) do on the chart and alerts you to enter <em>after</em> they've shown their hand — not before. You are reacting to institutional footprints, not predicting price.</p>
+    </div>
+    <div class="card" style="--accent:var(--cyan)">
+      <div class="card-title">CORE PHILOSOPHY</div>
+      <p>Institutions cannot hide their movements. They leave 3 clues on every chart: <strong style="color:var(--cyan)">Liquidity sweeps</strong> (stop hunts), <strong style="color:var(--green)">Order blocks</strong> (zones of interest), and <strong style="color:var(--gold)">Fair Value Gaps</strong> (imbalances they need to fill). This indicator detects all 3 simultaneously — and only fires a signal when they align inside a Kill Zone window.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 2 — KILL ZONES WITH TIMEZONE SELECTOR -->
+  <div class="section">
+    <div class="section-label">Section 02</div>
+    <div class="section-title"><span class="icon">⏰</span> Kill Zone Windows</div>
+    <p style="margin-bottom:16px; font-size:14px; color:var(--text-dim)">Only trade inside these 3 colored windows. Everything outside is noise.</p>
+
+    <!-- TIMEZONE SELECTOR -->
+    <div class="tz-bar">
+      <span class="tz-label">🌍 YOUR TIMEZONE</span>
+      <select class="tz-select" id="tzSelect" onchange="updateTimes()">
+        <option value="5">🇵🇰 Pakistan (PKT) — UTC+5</option>
+        <option value="5.5">🇮🇳 India (IST) — UTC+5:30</option>
+        <option value="6">🇧🇩 Bangladesh (BST) — UTC+6</option>
+        <option value="0">🇬🇧 United Kingdom (GMT) — UTC+0</option>
+        <option value="1">🇩🇪 Germany / Europe (CET) — UTC+1</option>
+        <option value="2">🇹🇷 Turkey (TRT) — UTC+2 / 🇪🇬 Egypt (EET)</option>
+        <option value="3">🇸🇦 Saudi Arabia (AST) — UTC+3</option>
+        <option value="3.5">🇮🇷 Iran (IRST) — UTC+3:30</option>
+        <option value="4">🇦🇪 UAE / Dubai (GST) — UTC+4</option>
+        <option value="7">🇹🇭 Thailand / Vietnam — UTC+7</option>
+        <option value="8">🇨🇳 China / Singapore — UTC+8</option>
+        <option value="9">🇯🇵 Japan (JST) — UTC+9</option>
+        <option value="10">🇦🇺 Australia East (AEST) — UTC+10</option>
+        <option value="-5">🇺🇸 USA Eastern (EST) — UTC-5</option>
+        <option value="-6">🇺🇸 USA Central (CST) — UTC-6</option>
+        <option value="-7">🇺🇸 USA Mountain (MST) — UTC-7</option>
+        <option value="-8">🇺🇸 USA Pacific (PST) — UTC-8</option>
+        <option value="-3">🇧🇷 Brazil (BRT) — UTC-3</option>
+        <option value="-4">🇻🇪 Venezuela / Bolivia — UTC-4</option>
+        <option value="1">🇳🇬 Nigeria (WAT) — UTC+1</option>
+        <option value="3">🇰🇪 Kenya (EAT) — UTC+3</option>
+      </select>
     </div>
 
-    <!-- Visual Simulation Section -->
-    <div class="card">
-        <h3>Visual Element Simulation</h3>
-        <p>How the indicator appears on your chart:</p>
-        <div class="visual-container">
-            <!-- Background Grid Lines -->
-            <div class="chart-line" style="top: 20%"></div>
-            <div class="chart-line" style="top: 50%"></div>
-            <div class="chart-line" style="top: 80%"></div>
+    <div class="kz-grid">
+      <div class="kz-card asian">
+        <div class="kz-flag">🌙</div>
+        <div class="kz-name">Asian KZ</div>
+        <div class="kz-time">00:00 – 03:00 UTC</div>
+        <div class="kz-local">Your Local Time:</div>
+        <div class="kz-local-val" id="asian-local">05:00 – 08:00</div>
+        <div class="kz-role">Range Builder</div>
+      </div>
+      <div class="kz-card london">
+        <div class="kz-flag">🇬🇧</div>
+        <div class="kz-name">London KZ</div>
+        <div class="kz-time">02:00 – 05:00 UTC</div>
+        <div class="kz-local">Your Local Time:</div>
+        <div class="kz-local-val" id="london-local">07:00 – 10:00</div>
+        <div class="kz-role">Trend Setter</div>
+      </div>
+      <div class="kz-card ny">
+        <div class="kz-flag">🇺🇸</div>
+        <div class="kz-name">New York KZ</div>
+        <div class="kz-time">12:00 – 15:00 UTC</div>
+        <div class="kz-local">Your Local Time:</div>
+        <div class="kz-local-val" id="ny-local">17:00 – 20:00</div>
+        <div class="kz-role">Power Move</div>
+      </div>
+    </div>
+    <div class="warning">
+      <div class="warning-icon">⚠️</div>
+      <p><strong>Asian KZ = Observation only.</strong> Do not enter trades during the Asian session. Its only purpose is to build the range whose High and Low become the liquidity targets for London and NY sessions.</p>
+    </div>
+  </div>
 
-            <!-- Order Blocks -->
-            <div class="ob-box ob-bull">BULL OB</div>
-            <div class="ob-box ob-bear">BEAR OB</div>
-
-            <!-- FVG -->
-            <div class="fvg-box">FVG</div>
-
-            <!-- Signals -->
-            <div class="signal-triangle signal-long"></div>
-            <div class="signal-triangle signal-short"></div>
-            
-            <!-- Labels -->
-            <div style="position: absolute; top: 10px; left: 10px; color: #fff; font-size: 0.8rem;">
-                <span style="color:var(--accent-green)">● LONG (A)</span>
-                <span style="color:var(--accent-red); margin-left:10px;">● SHORT (A)</span>
-            </div>
+  <!-- SECTION 3 -->
+  <div class="section">
+    <div class="section-label">Section 03</div>
+    <div class="section-title"><span class="icon">📊</span> What Each Visual Element Means</div>
+    <div class="legend-grid">
+      <div class="legend-item">
+        <div class="legend-icon">💧</div>
+        <div class="legend-body">
+          <div class="name" style="color:var(--green)">SWEEP (Sellside)</div>
+          <div class="desc">Price wicked <em>below</em> recent swing low and closed back above it. Stop losses of short-holders were hunted. Institutions bought. Look for a long setup.</div>
         </div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-icon">💧</div>
+        <div class="legend-body">
+          <div class="name" style="color:var(--red)">SWEEP (Buyside)</div>
+          <div class="desc">Price wicked <em>above</em> recent swing high and closed back below. Long stop losses were triggered. Institutions sold. Look for a short setup.</div>
+        </div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-icon">📦</div>
+        <div class="legend-body">
+          <div class="name" style="color:var(--cyan)">Bull OB (Cyan Box)</div>
+          <div class="desc">Last bearish candle before a strong bullish impulse. This is where institutions placed buy orders. Price respects this zone on retest.</div>
+        </div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-icon">📦</div>
+        <div class="legend-body">
+          <div class="name" style="color:var(--red)">Bear OB (Red Box)</div>
+          <div class="desc">Last bullish candle before a strong bearish impulse. Institutional sell zone. Price rejects from here when retested from below.</div>
+        </div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-icon" style="color:var(--green)">▬</div>
+        <div class="legend-body">
+          <div class="name" style="color:var(--green)">Bull FVG (Green Box)</div>
+          <div class="desc">3-candle imbalance where buyers moved so fast they left a gap. Acts as a magnet — price often returns to fill it. Entry zone for longs.</div>
+        </div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-icon" style="color:var(--orange)">▬</div>
+        <div class="legend-body">
+          <div class="name" style="color:var(--orange)">Bear FVG (Orange Box)</div>
+          <div class="desc">Sellers created an imbalance gap on the downside. Price pulls back into this zone before continuing down. Entry zone for shorts.</div>
+        </div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-icon">🏗️</div>
+        <div class="legend-body">
+          <div class="name" style="color:var(--green)">BOS ▲ / BOS ▼</div>
+          <div class="desc">Break of Structure. Price confirmed a new swing high (bullish BOS) or swing low (bearish BOS). This sets and confirms the directional bias.</div>
+        </div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-icon">🔄</div>
+        <div class="legend-body">
+          <div class="name" style="color:var(--gold)">CHoCH ▲ / CHoCH ▼</div>
+          <div class="desc">Change of Character. Structure shifted against the prevailing trend — the most important confirmation signal for a reversal trade entry.</div>
+        </div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-icon" style="font-size:22px;color:var(--green)">▲</div>
+        <div class="legend-body">
+          <div class="name" style="color:var(--green)">LONG Signal ▲</div>
+          <div class="desc">Big green triangle below a candle. All conditions aligned: Sellside sweep + Kill Zone active + Bullish HTF structure. High-probability long setup.</div>
+        </div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-icon" style="font-size:22px;color:var(--red)">▼</div>
+        <div class="legend-body">
+          <div class="name" style="color:var(--red)">SHORT Signal ▼</div>
+          <div class="desc">Big red triangle above a candle. All conditions aligned: Buyside sweep + Kill Zone active + Bearish HTF structure. High-probability short setup.</div>
+        </div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-icon">⭐</div>
+        <div class="legend-body">
+          <div class="name" style="color:var(--gold)">A-GRADE Label</div>
+          <div class="desc">All 4 confluences hit simultaneously: Sweep + Kill Zone + Structure + FVG. This is the highest-quality setup. <strong style="color:#fff">Only trade A-Grade.</strong></div>
+        </div>
+      </div>
+      <div class="legend-item">
+        <div class="legend-icon">🌙</div>
+        <div class="legend-body">
+          <div class="name" style="color:var(--purple)">Asian High / Low Dashes</div>
+          <div class="desc">Dashed purple horizontal lines marking the previous Asian session's range. These are your primary liquidity targets for London and NY sessions.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4 — GRADE TABLE -->
+  <div class="section">
+    <div class="section-label">Section 04</div>
+    <div class="section-title"><span class="icon">⭐</span> Signal Grade System</div>
+    <table class="grade-table">
+      <thead>
+        <tr><th>Grade</th><th>Conditions Required</th><th>Win Rate</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="grade-a">⭐ A-GRADE</span></td>
+          <td style="font-size:13px">Sweep + Kill Zone + Structure + FVG all aligned</td>
+          <td style="color:var(--gold);font-family:'JetBrains Mono',monospace;font-weight:700">65–72%</td>
+          <td style="color:var(--green);font-weight:700;font-size:13px">FULL SIZE ENTRY</td>
+        </tr>
+        <tr>
+          <td><span class="grade-b">B-GRADE</span></td>
+          <td style="font-size:13px">Sweep + Kill Zone + Structure (no FVG)</td>
+          <td style="color:var(--green);font-family:'JetBrains Mono',monospace;font-weight:700">55–62%</td>
+          <td style="color:var(--cyan);font-weight:700;font-size:13px">HALF SIZE — Watch</td>
+        </tr>
+        <tr>
+          <td><span class="grade-c">C-GRADE</span></td>
+          <td style="font-size:13px">Sweep + Structure only (outside Kill Zone)</td>
+          <td style="color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-weight:700">~48%</td>
+          <td style="color:var(--text-dim);font-weight:700;font-size:13px">SKIP — Info only</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="warning" style="background:rgba(255,214,0,0.06);border-color:rgba(255,214,0,0.25);margin-top:16px;">
+      <div class="warning-icon">🔱</div>
+      <p style="color:#ffe082"><strong>Golden Rule:</strong> Only execute trades on A-Grade signals. B-Grade is for watching and learning. C-Grade is background information only. Patience is the edge.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 5 — STEPS -->
+  <div class="section">
+    <div class="section-label">Section 05</div>
+    <div class="section-title"><span class="icon">🎯</span> Step-by-Step Trade Execution</div>
+    <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">CHECK DASHBOARD BEFORE SESSION OPENS</div><p>Open TradingView 5 minutes before Kill Zone starts. Check the dashboard: What is HTF Bias? Where is Asian High/Low? Is there an open FVG or OB nearby? Build your mental map before price starts moving.</p></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">WAIT FOR THE 💧 SWEEP LABEL</div><p>Do nothing until a Sweep label appears on the chart. If it says <strong style="color:var(--green)">"SWEEP (Sellside)"</strong> — institutions hunted longs below, reversal up expected. If it says <strong style="color:var(--red)">"SWEEP (Buyside)"</strong> — institutions hunted stops above, reversal down expected. This is your trigger event.</p></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">CONFIRM THE SIGNAL GRADE IN DASHBOARD</div><p>Immediately look at the Dashboard → Signal Grade field. If it says <strong style="color:var(--gold)">⭐ A-GRADE</strong> — proceed to entry. If it says B-Grade, reduce size or skip. If it says Waiting — sit on your hands. Grade determines sizing, not emotion.</p></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">FIND THE ORDER BLOCK ON 15M CHART</div><p>Look for the cyan (Bull OB) or red (Bear OB) box near the sweep zone. Wait for price to pull back INTO this box. The 50% level of the OB box is your ideal limit order entry. If OB has an FVG inside it — that's your exact entry zone.</p></div></div>
+    <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title">WAIT FOR CHoCH CONFIRMATION</div><p>The CHoCH label must appear on the 5M or 15M chart after price taps the OB. A <strong style="color:var(--gold)">CHoCH ▲</strong> = buyer confirmation for longs. A <strong style="color:var(--gold)">CHoCH ▼</strong> = seller confirmation for shorts. No CHoCH = no entry. This single rule eliminates most false signals.</p></div></div>
+    <div class="step"><div class="step-num">6</div><div class="step-content"><div class="step-title">EXECUTE WITH PROPER SL & 3 TPs</div><p>Enter at the OB 50% level or on CHoCH candle close. Place SL beyond the sweep wick. Use 3 targets:</p>
+      <div class="tp-grid">
+        <div class="tp-box sl"><div class="tp-label">STOP LOSS</div><div class="tp-pct" style="color:var(--red)">SL</div><div class="tp-detail">Beyond sweep wick. Full thesis invalid if hit.</div></div>
+        <div class="tp-box tp1"><div class="tp-label">TP 1</div><div class="tp-pct">50%</div><div class="tp-detail">Nearest FVG or internal liquidity. Move SL to BE.</div></div>
+        <div class="tp-box tp2"><div class="tp-label">TP 2</div><div class="tp-pct">30%</div><div class="tp-detail">Asian session opposite boundary (High or Low).</div></div>
+        <div class="tp-box tp3"><div class="tp-label">TP 3</div><div class="tp-pct">20%</div><div class="tp-detail">HTF draw — prev day high/low or weekly level.</div></div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- SECTION 6 — RISK -->
+  <div class="section">
+    <div class="section-label">Section 06</div>
+    <div class="section-title"><span class="icon">🛡️</span> Non-Negotiable Risk Rules</div>
+    <div class="card" style="--accent:var(--red)">
+      <ul class="rules-list">
+        <li>Max risk per trade: <strong style="color:#fff">1–2% of total account</strong> only</li>
+        <li>Minimum Risk-to-Reward before entry: <strong style="color:#fff">2:1 minimum</strong> — if you can't get 2R, skip the trade</li>
+        <li>Max trades per Kill Zone session: <strong style="color:#fff">2 trades</strong></li>
+        <li>Max trades per full day: <strong style="color:#fff">3 trades total</strong></li>
+        <li>If 2 stop losses hit in same day: <strong style="color:#fff">Stop trading, close platform, come back tomorrow</strong></li>
+        <li>Always check <strong style="color:#fff">economic calendar</strong> before London and NY opens — news events override all technical setups</li>
+        <li>Never move SL further from entry to avoid being stopped out — <strong style="color:#fff">most dangerous habit in trading</strong></li>
+        <li>After TP1 is hit, always move SL to breakeven. <strong style="color:#fff">A free trade running = no stress trading</strong></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SECTION 7 — ALERTS -->
+  <div class="section">
+    <div class="section-label">Section 07</div>
+    <div class="section-title"><span class="icon">🔔</span> Setting Up TradingView Alerts</div>
+    <p style="margin-bottom:16px; font-size:14px; color:var(--text-dim)">Get notified automatically when A-Grade setups trigger. You don't need to stare at the screen all day.</p>
+    <div class="alert-steps">
+      <div class="alert-step"><div class="alert-step-num">1</div><p>On TradingView, click the <strong style="color:#fff">🔔 Alert</strong> button in the top toolbar.</p></div>
+      <div class="alert-step"><div class="alert-step-num">2</div><p>In "Condition" dropdown → select <code>🔱 Bantee Alpha — SMC Liquidity Sweep + Kill Zone</code></p></div>
+      <div class="alert-step"><div class="alert-step-num">3</div><p>Choose either <code>Bantee 🔱 LONG Setup</code> or <code>Bantee 🔱 SHORT Setup</code> from the signal list.</p></div>
+      <div class="alert-step"><div class="alert-step-num">4</div><p>Set notification to <strong style="color:#fff">Push Notification + Email</strong>. Set "Expiry" to open-ended.</p></div>
+      <div class="alert-step"><div class="alert-step-num">5</div><p>Create a second alert for the opposite direction. You now have 24/7 coverage on autopilot. 🔱</p></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-brand">🔱 BANTEE ALPHA</div>
+    <div class="footer-sub">Trade With Institutional Precision</div>
+    <p class="footer-disc">This website is for educational purposes only. All trading involves risk. Never risk more than you can afford to lose. Always use proper risk management.</p>
+  </div>
+
+</div>
+</div><!-- /page-home -->
+
+
+<!-- ════════════════════════════════════════
+     PAGE 2 — DASHBOARD GUIDE
+════════════════════════════════════════ -->
+<div id="page-dashboard" class="page">
+<div class="container">
+
+  <div class="hero">
+    <div class="hero-glow"></div>
+    <div class="trident" style="font-size:52px">📋</div>
+    <div class="hero-title">Dashboard Decoded</div>
+    <div class="hero-sub">Every Row. Every State. Every Signal.</div>
+    <p class="hero-desc">A complete breakdown of every row in the live dashboard — what it shows, what each state means, and exactly how to read it before every trade.</p>
+  </div>
+
+  <div class="dash-replica">
+    <div class="dash-header"><div class="d-title">🔱 BANTEE ALPHA</div><div class="d-status">STATUS</div></div>
+    <div class="d-row"><div class="d-key">Kill Zone</div><div class="d-val" style="color:var(--cyan)"><span class="dot" style="background:var(--cyan);box-shadow:0 0 8px var(--cyan)"></span>NY KZ</div></div>
+    <div class="d-row"><div class="d-key">HTF Bias</div><div class="d-val" style="color:var(--green)"><span class="dot" style="background:var(--green);box-shadow:0 0 8px var(--green)"></span>BULLISH</div></div>
+    <div class="d-row"><div class="d-key">Last Sweep</div><div class="d-val" style="color:var(--red)">💧 Buyside</div></div>
+    <div class="d-row"><div class="d-key">FVG</div><div class="d-val" style="color:var(--green)"><span class="dot" style="background:var(--green);box-shadow:0 0 8px var(--green)"></span>Bull FVG</div></div>
+    <div class="d-row"><div class="d-key">Signal Grade</div><div class="d-val" style="color:var(--text-dim)">— Waiting</div></div>
+    <div class="d-row"><div class="d-key">Asian H/L</div><div class="d-val" style="color:var(--purple);font-family:'JetBrains Mono',monospace;font-size:12px">74097.0 / 73069</div></div>
+    <div class="dash-action"><div class="d-action-key">Action</div><div class="d-action-val" style="color:var(--text-dim)">⏳ WAIT</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-label">Section 01</div>
+    <div class="section-title"><span class="icon">📋</span> Every Row Explained</div>
+
+    <div class="row-card">
+      <div class="row-card-header"><div class="row-card-icon">⏰</div><div><div class="row-card-name" style="color:var(--cyan)">ROW 1 — KILL ZONE</div><div style="font-size:12px;color:var(--text-dim);margin-top:2px">Which trading session is currently active?</div></div></div>
+      <div class="row-card-body">
+        <p>This row tells you whether it is the right time to trade or not. Only trade during 3 sessions — everything outside these windows is noise. The indicator auto-detects the active session and also changes the chart background color accordingly.</p>
+        <div class="states">
+          <div class="state" style="color:#7B61FF;border-color:rgba(123,97,255,0.3);background:rgba(123,97,255,0.08)">🌙 Asian KZ — Range Build Only. Do not trade.</div>
+          <div class="state" style="color:var(--gold);border-color:rgba(255,214,0,0.3);background:rgba(255,214,0,0.07)">🇬🇧 London KZ — Best session. Trend set here.</div>
+          <div class="state" style="color:var(--cyan);border-color:rgba(0,229,255,0.3);background:rgba(0,229,255,0.07)">🇺🇸 NY KZ — Power move session.</div>
+          <div class="state" style="color:var(--text-dim);border-color:rgba(255,255,255,0.08);background:rgba(255,255,255,0.03)">⚫ No KZ — Outside all windows. Do not trade.</div>
+        </div>
+      </div>
     </div>
 
-    <!-- Part One -->
-    <section>
-        <h2>Part One — Indicator Guide</h2>
-        
-        <div class="card">
-            <h3>Chapter 1 — What Is BanteeX?</h3>
-            <p>BanteeX is a multi-confluence institutional trading indicator built on <strong>Smart Money Concepts (SMC)</strong> combined with <strong>ICT Kill Zone timing</strong>. It tracks what institutional traders—banks, hedge funds, and market makers—do on the chart, and alerts you to enter after they have shown their hand, not before.</p>
-            <p><strong>Core Philosophy:</strong> Institutions leave 3 clues: Liquidity Sweeps, Order Blocks, and Fair Value Gaps. BanteeX detects all 3 simultaneously.</p>
+    <div class="row-card">
+      <div class="row-card-header"><div class="row-card-icon">📈</div><div><div class="row-card-name" style="color:var(--green)">ROW 2 — HTF BIAS</div><div style="font-size:12px;color:var(--text-dim);margin-top:2px">What is the overall direction on the 4H chart?</div></div></div>
+      <div class="row-card-body">
+        <p>HTF = Higher Time Frame. This row reads the market structure from the 4H chart and determines whether the trend is up or down. If the bias is <strong style="color:var(--green)">BULLISH</strong>, only take long trades. If <strong style="color:var(--red)">BEARISH</strong>, only take short trades. Never trade against the HTF Bias — trading against structure destroys accounts.</p>
+        <div class="states">
+          <div class="state" style="color:var(--green);border-color:rgba(0,230,118,0.3);background:rgba(0,230,118,0.08)">📈 BULLISH — Only take LONG trades</div>
+          <div class="state" style="color:var(--red);border-color:rgba(255,23,68,0.3);background:rgba(255,23,68,0.08)">📉 BEARISH — Only take SHORT trades</div>
         </div>
+      </div>
+    </div>
 
-        <div class="card">
-            <h3>Chapter 2 — Kill Zone Windows</h3>
-            <p>Only trade inside these 3 colored windows. Everything outside is noise.</p>
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Session</th>
-                            <th>UTC Time</th>
-                            <th>PKT / IST</th>
-                            <th>Role</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>🌙 Asian KZ</td>
-                            <td>00:00 - 03:00</td>
-                            <td>05:00-08:00</td>
-                            <td>Range Builder</td>
-                            <td style="color: var(--accent-red);">NO - Observe Only</td>
-                        </tr>
-                        <tr>
-                            <td>🇬🇧 London KZ</td>
-                            <td>02:00 - 05:00</td>
-                            <td>07:00-10:00</td>
-                            <td>Trend Setter</td>
-                            <td class="kz-active">YES - Best Session</td>
-                        </tr>
-                        <tr>
-                            <td>🇺🇸 New York KZ</td>
-                            <td>12:00 - 15:00</td>
-                            <td>17:00-20:00</td>
-                            <td>Power Move</td>
-                            <td class="kz-active">YES - Power Move</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+    <div class="row-card">
+      <div class="row-card-header"><div class="row-card-icon">💧</div><div><div class="row-card-name" style="color:var(--red)">ROW 3 — LAST SWEEP</div><div style="font-size:12px;color:var(--text-dim);margin-top:2px">Which liquidity grab did institutions just execute?</div></div></div>
+      <div class="row-card-body">
+        <p>A liquidity sweep happens when price briefly breaks a recent high or low — triggering retail stop losses — and then immediately reverses back. This is your trigger event. Only consider a trade after a sweep has occurred.</p>
+        <div class="states">
+          <div class="state" style="color:var(--green);border-color:rgba(0,230,118,0.3);background:rgba(0,230,118,0.08)">💧 Sellside — Price broke below a low and recovered → Look for LONG</div>
+          <div class="state" style="color:var(--red);border-color:rgba(255,23,68,0.3);background:rgba(255,23,68,0.08)">💧 Buyside — Price broke above a high and rejected → Look for SHORT</div>
+          <div class="state" style="color:var(--text-dim);border-color:rgba(255,255,255,0.08);background:rgba(255,255,255,0.03)">— No sweep yet — Wait patiently</div>
         </div>
+        <div class="warning" style="margin-top:12px;">
+          <div class="warning-icon">⚠️</div>
+          <p><strong>Your screen showed:</strong> "Buyside" sweep + BULLISH bias — this is a conflict. That is exactly why Signal Grade showed "Waiting." The indicator was protecting you — perfectly correct behavior.</p>
+        </div>
+      </div>
+    </div>
 
-        <div class="card">
-            <h3>Chapter 3 — Visual Elements</h3>
-            <ul style="list-style: none; padding-left: 0;">
-                <li style="margin-bottom: 10px;">💧 <strong>SWEEP:</strong> Price wicked beyond a swing point
+    <div class="row-card">
+      <div class="row-card-header"><div class="row-card-icon">📊</div><div><div class="row-card-name" style="color:var(--orange)">ROW 4 — FVG (Fair Value Gap)</div><div style="font-size:12px;color:var(--text-dim);margin-top:2px">Is there an imbalance zone present near the sweep?</div></div></div>
+      <div class="row-card-body">
+        <p>A Fair Value Gap forms when price moves so aggressively that a gap is left between 3 consecutive candles. When an FVG aligns with an Order Block, that is your exact entry zone.</p>
+        <div class="states">
+          <div class="state" style="color:var(--green);border-color:rgba(0,230,118,0.3);background:rgba(0,230,118,0.08)">✅ Bull FVG — Bullish imbalance — Long entry zone</div>
+          <div class="state" style="color:var(--orange);border-color:rgba(255,109,0,0.3);background:rgba(255,109,0,0.08)">✅ Bear FVG — Bearish imbalance — Short entry zone</div>
+          <div class="state" style="color:var(--text-dim);border-color:rgba(255,255,255,0.08);background:rgba(255,255,255,0.03)">— None — No FVG. A-Grade signal not possible.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row-card">
+      <div class="row-card-header"><div class="row-card-icon">🌙</div><div><div class="row-card-name" style="color:var(--purple)">ROW 5 — ASIAN H/L</div><div style="font-size:12px;color:var(--text-dim);margin-top:2px">Previous Asian session range — your liquidity targets</div></div></div>
+      <div class="row-card-body">
+        <p>These two numbers show the High and Low of the previous Asian session — the levels where retail stop losses cluster. During London and NY sessions, price commonly sweeps these levels first before reversing. Use them as your TP2 targets.</p>
+        <div class="states">
+          <div class="state" style="color:var(--purple);border-color:rgba(123,97,255,0.3);background:rgba(123,97,255,0.08)">📍 Top number = Asian High (buyside liquidity pool)</div>
+          <div class="state" style="color:var(--purple);border-color:rgba(123,97,255,0.3);background:rgba(123,97,255,0.08)">📍 Bottom number = Asian Low (sellside liquidity pool)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIGNAL GRADE -->
+  <div class="section">
+    <div class="section-label">Section 02 — Most Important</div>
+    <div class="section-title"><span class="icon">⭐</span> Signal Grade — Complete Breakdown</div>
+    <p style="font-size:14px;color:var(--text-dim);margin-bottom:20px;line-height:1.7">Signal Grade tells you how many conditions are aligned at once. The more conditions — the higher the probability. <strong style="color:#fff">Only trade A-Grade at full size.</strong></p>
+    <div class="grade-stack">
+      <div class="grade-block" style="--gc:var(--gold);background:rgba(255,214,0,0.05);border-color:rgba(255,214,0,0.25)">
+        <div class="gb-top"><div><div class="gb-label">HIGHEST QUALITY</div><div class="gb-badge" style="color:var(--gold);border-color:rgba(255,214,0,0.4);background:rgba(255,214,0,0.1)">⭐ A-GRADE</div></div><div style="text-align:right"><div class="gb-label">WIN RATE</div><div class="gb-winrate">65–72%</div></div></div>
+        <ul class="gb-conds"><li><span>✅</span> Kill Zone is active (London or NY)</li><li><span>✅</span> HTF Bias is clearly directional</li><li><span>✅</span> Liquidity Sweep has occurred</li><li><span>✅</span> FVG is present near the sweep zone</li></ul>
+        <div class="gb-action" style="color:var(--gold);border-color:rgba(255,214,0,0.3);background:rgba(255,214,0,0.08)">🔱 FULL POSITION ENTRY — 1–2% Account Risk</div>
+      </div>
+      <div class="grade-block" style="--gc:var(--green);background:rgba(0,230,118,0.04);border-color:rgba(0,230,118,0.2)">
+        <div class="gb-top"><div><div class="gb-label">MEDIUM QUALITY</div><div class="gb-badge" style="color:var(--green);border-color:rgba(0,230,118,0.35);background:rgba(0,230,118,0.08)">B-GRADE</div></div><div style="text-align:right"><div class="gb-label">WIN RATE</div><div class="gb-winrate">55–62%</div></div></div>
+        <ul class="gb-conds"><li><span>✅</span> Kill Zone active + HTF Bias + Sweep all aligned</li><li><span>❌</span> FVG is missing — one confluence absent</li></ul>
+        <div class="gb-action" style="color:var(--green);border-color:rgba(0,230,118,0.25);background:rgba(0,230,118,0.06)">👀 HALF SIZE ONLY — 0.5–1% Risk — Watch carefully</div>
+      </div>
+      <div class="grade-block" style="--gc:var(--text-dim);background:rgba(255,255,255,0.02);border-color:rgba(255,255,255,0.08)">
+        <div class="gb-top"><div><div class="gb-label">CURRENT STATE</div><div class="gb-badge" style="color:var(--text-dim);border-color:rgba(255,255,255,0.12);background:rgba(255,255,255,0.04)">⏳ WAITING</div></div><div style="text-align:right"><div class="gb-label">ACTION</div><div class="gb-winrate" style="color:var(--text-dim);font-size:16px">DO NOTHING</div></div></div>
+        <ul class="gb-conds"><li><span>❌</span> Conditions have not fully aligned yet</li><li><span>⏳</span> Indicator is waiting for the correct setup — this is normal</li></ul>
+        <div class="gb-action" style="color:var(--text-dim);border-color:rgba(255,255,255,0.08);background:rgba(255,255,255,0.025)">"Waiting" most of the time is a feature, not a bug ✅</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="section">
+    <div class="section-label">Section 03</div>
+    <div class="section-title"><span class="icon">🗺️</span> From "Waiting" to "GO LONG" — Exact Journey</div>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">STEP 01</div><div class="tl-title">Kill Zone Becomes Active</div><div class="tl-body">Dashboard Kill Zone row shows London KZ or NY KZ. Chart background color changes. You are now in alert mode.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">STEP 02</div><div class="tl-title">HTF Bias Is Clear</div><div class="tl-body">Row 2 clearly shows BULLISH or BEARISH. If the market is ranging or unclear, do not trade this session.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">STEP 03</div><div class="tl-title">💧 Sweep Label Appears on Chart</div><div class="tl-body">A "SWEEP" label fires on the chart. The Last Sweep row in the dashboard updates. This is your trigger event.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">STEP 04</div><div class="tl-title">Sweep Direction Matches HTF Bias</div><div class="tl-body">BULLISH bias requires SELLSIDE sweep → long reversal. BEARISH bias requires BUYSIDE sweep → short reversal. Mismatch = "Waiting" stays. Wait for correct alignment.</div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">STEP 05</div><div class="tl-title">FVG Appears Near the Sweep</div><div class="tl-body">Dashboard shows "Bull FVG" or "Bear FVG." Signal Grade upgrades to A-GRADE automatically.</div></div>
+      <div class="tl-item"><div class="tl-dot" style="background:var(--gold);width:18px;height:18px;left:-28px;box-shadow:0 0 20px rgba(255,214,0,0.8)"></div><div class="tl-time" style="color:var(--gold);font-size:12px">🔱 FINAL STEP</div><div class="tl-title" style="color:var(--gold)">Action Row → "GO LONG (A)" or "GO SHORT (A)"</div><div class="tl-body">All 4 conditions aligned. <strong style="color:#fff">Go to 15M chart, find the Order Block, wait for CHoCH confirmation, and execute your entry.</strong></div></div>
+    </div>
+    <div class="warn-gold">
+      <div style="font-size:20px;flex-shrink:0;margin-top:2px">🔱</div>
+      <p><strong>Most important reminder:</strong> The dashboard shows "WAIT" most of the time — and that is perfectly correct. Professional traders take only 1–2 setups per day. Patience is your real edge.</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-brand">🔱 BANTEE ALPHA</div>
+    <div class="footer-sub">Trade With Institutional Precision</div>
+    <p class="footer-disc">This website is for educational purposes only. All trading involves risk. Never risk more than you can afford to lose. Always use proper risk management.</p>
+  </div>
+
+</div>
+</div><!-- /page-dashboard -->
+
+
+<!-- ════════════════════════════════════════
+     PAGE 3 — ABOUT
+════════════════════════════════════════ -->
+<div id="page-about" class="page">
+<div class="container">
+
+  <div class="about-hero">
+    <div class="hero-glow"></div>
+    <div class="about-avatar">🔱</div>
+    <div class="about-name">BANTEE ALPHA</div>
+    <div class="about-tag">CRYPTO ANALYST · TRADING EDUCATOR · SMC SPECIALIST</div>
+    <p class="about-bio">Institutional-level crypto analysis, Smart Money Concepts education, and precision trading tools — built for a community that trades with intelligence, not emotion.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div style="text-align:center;margin-bottom:12px;">
+    <div class="section-label" style="text-align:center">Find Us On</div>
+    <div class="section-title" style="justify-content:center;border:none;padding:0"><span class="icon">🌐</span> Connect With Bantee Alpha</div>
+  </div>
+
+  <div class="social-grid">
+    <a class="social-link" href="https://coinmarketcap.com/community/profile/manf32qw6b0p" target="_blank" style="--sc:#17C784;--sb:rgba(23,199,132,0.1);--sg:rgba(23,199,132,0.35)">
+      <div class="social-logo">
+        <svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="24" fill="#0D3349"/><path d="M33.08 27.4c-.42.24-.9.26-1.32.03-.54-.29-.84-.9-.84-1.7v-4.29c0-1.21-.5-2.07-1.32-2.31-1.41-.42-2.51 1.23-2.93 1.91l-3.67 6v-5.73c-.03-1.1-.39-1.76-1.08-1.95-.48-.14-1.17-.08-1.83.89l-6.15 9.86a9.57 9.57 0 01-.93-4.16 9.99 9.99 0 0119.98 0c0 .69-.08 1.38-.21 2.05l.31-.6zm-9.08 3.3l-.93-1.35-7.41-10.6h2.8l5.97 8.55.93 1.35 7.77 11.1H30.4L23.96 30.7v-.45z" fill="#17C784"/></svg>
+      </div>
+      <div class="social-name">COINMARKETCAP</div>
+    </a>
+    <a class="social-link" href="https://app.binance.com/uni-qr/cpro/Thesignalprovider?l=en&r=BUW1XT3I&uc=app_square_share_link&us=copylink" target="_blank" style="--sc:#F0B90B;--sb:rgba(240,185,11,0.1);--sg:rgba(240,185,11,0.35)">
+      <div class="social-logo">
+        <svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="24" fill="#1A1A1A"/><path d="M24 10.5l3.09 3.09-10.32 10.32-3.09-3.09L24 10.5zM15.66 20.25l3.09 3.09-3.09 3.09-3.09-3.09 3.09-3.09zm8.34 8.34l3.09 3.09-3.09 3.09-3.09-3.09 3.09-3.09zm8.34-8.34l3.09 3.09-3.09 3.09-3.09-3.09 3.09-3.09zm-3.93 3.93l-7.41 7.41-3.09-3.09 7.41-7.41 3.09 3.09z" fill="#F0B90B"/></svg>
+      </div>
+      <div class="social-name">BINANCE SQUARE</div>
+    </a>
+    <a class="social-link" href="https://x.com/MrAdvisor_" target="_blank" style="--sc:#ffffff;--sb:rgba(255,255,255,0.07);--sg:rgba(255,255,255,0.15)">
+      <div class="social-logo" style="background:rgba(0,0,0,0.5);border-color:rgba(255,255,255,0.2)">
+        <svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="24" fill="#000"/><path d="M27.36 22.35l8.79-10.22h-2.08l-7.65 8.89-6.12-8.89h-7.02l9.23 13.42-9.23 10.73h2.09l8.07-9.39 6.45 9.39h7.02L27.36 22.35zm-2.86 3.33l-.93-1.33-7.41-10.6h3.19l5.97 8.55.93 1.33 7.77 11.1H30.8l-6.3-9.05z" fill="white"/></svg>
+      </div>
+      <div class="social-name">X / TWITTER</div>
+    </a>
+  </div>
+
+  <div class="footer">
+    <div class="footer-brand">🔱 BANTEE ALPHA</div>
+    <div class="footer-sub">Trade With Institutional Precision</div>
+    <p class="footer-disc">This website is for educational purposes only. All trading involves risk. Never risk more than you can afford to lose. Always use proper risk management.</p>
+  </div>
+
+</div>
+</div><!-- /page-about -->
+
+<script>
+/* ══ MENU ══ */
+function toggleMenu() {
+  document.getElementById('menuBtn').classList.toggle('open');
+  document.getElementById('dropdown').classList.toggle('open');
+}
+document.addEventListener('click', function(e){
+  if(!e.target.closest('#menuBtn') && !e.target.closest('#dropdown')){
+    document.getElementById('menuBtn').classList.remove('open');
+    document.getElementById('dropdown').classList.remove('open');
+  }
+});
+
+/* ══ PAGE NAVIGATION ══ */
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.dropdown a').forEach(a => a.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.getElementById('nav-' + page).classList.add('active');
+  document.getElementById('menuBtn').classList.remove('open');
+  document.getElementById('dropdown').classList.remove('open');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+document.getElementById('nav-home').classList.add('active');
+
+/* ══ TIMEZONE CONVERTER ══ */
+// UTC times for each session: [startHour, endHour]
+const sessions = {
+  asian:  [0,  3],
+  london: [2,  5],
+  ny:     [12, 15]
+};
+
+function formatTime(utcHour, offsetHours) {
+  // offset can be fractional e.g. 5.5 for IST
+  let totalMins = utcHour * 60 + offsetHours * 60;
+  // wrap around 24 hours
+  totalMins = ((totalMins % (24*60)) + 24*60) % (24*60);
+  const h = Math.floor(totalMins / 60);
+  const m = totalMins % 60;
+  return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
+}
+
+function updateTimes() {
+  const offset = parseFloat(document.getElementById('tzSelect').value);
+  document.getElementById('asian-local').textContent  =
+    formatTime(sessions.asian[0],  offset) + ' – ' + formatTime(sessions.asian[1],  offset);
+  document.getElementById('london-local').textContent =
+    formatTime(sessions.london[0], offset) + ' – ' + formatTime(sessions.london[1], offset);
+  document.getElementById('ny-local').textContent     =
+    formatTime(sessions.ny[0],     offset) + ' – ' + formatTime(sessions.ny[1],     offset);
+}
+
+// init on load
+updateTimes();
+</script>
+</body>
+</html>
